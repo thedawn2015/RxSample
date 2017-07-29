@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
                         RxJavaUtil.method2();
                         break;
                     case R.id.button_test3:
+                        RxJavaUtil.method3();
                         break;
                 }
             }

@@ -115,11 +115,11 @@ public class RxJavaUtil {
     /** create&comp */
     public static void method3() {
         initData();
-        Observable
-                .combineLatest(new Observable<Object>(), new Observable<Object>())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-        ;
+//        Observable
+//                .combineLatest(new Observable<Object>(), new Observable<Object>())
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//        ;
     }
 
 
