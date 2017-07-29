@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         buttontest3.setOnClickListener(onClickListener);
     }
 
-    private <T> T method(@IdRes int resId) {
+    private <T extends View> T method(@IdRes int resId) {
         return (T) findViewById(resId);
     }
 }
