@@ -4,11 +4,13 @@ import android.util.Log;
 
 import com.app.simon.rxsample.models.BaseResponse;
 import com.app.simon.rxsample.models.Person;
+import com.app.simon.rxsample.models.Place;
 
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 /**
@@ -22,6 +24,8 @@ public class RxJavaUtil {
     public static final String TAG = RxJavaUtil.class.getSimpleName();
 
     private static BaseResponse<Person> baseResponse;
+    public static Subscriber<? super Person> subscriberFirst;
+    public static Subscriber<? super Place> subscriberSecond;
 
     /** create */
     public static void method1() {
@@ -115,11 +119,46 @@ public class RxJavaUtil {
     /** create&comp */
     public static void method3() {
         initData();
-//        Observable
-//                .combineLatest(new Observable<Object>(), new Observable<Object>())
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//        ;
+        Observable<Person> personObservable = Observable.create(new Observable.OnSubscribe<Person>() {
+            @Override
+            public void call(Subscriber<? super Person> subscriber) {
+                RxJavaUtil.subscriberFirst = subscriber;
+            }
+        });
+        Observable<Place> placeObservable = Observable.create(new Observable.OnSubscribe<Place>() {
+            @Override
+            public void call(Subscriber<? super Place> subscriber) {
+                RxJavaUtil.subscriberSecond = subscriber;
+
+            }
+        });
+        Observable
+                .combineLatest(personObservable, placeObservable, new Func2<Person, Place, String[]>() {
+                    @Override
+                    public String[] call(Person person, Place place) {
+                        return new String[]{person.getName(), place.getCity()};
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<String[]>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.i(TAG, "onCompleted: ");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.i(TAG, "onError: ");
+                    }
+
+                    @Override
+                    public void onNext(String[] o) {
+                        Log.i(TAG, "onNext: " + o[0] + ";" + o[1]);
+                    }
+                })
+
+        ;
     }
 
 
